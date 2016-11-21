@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import re
 import operator
 from collections import Counter
+from nltk.corpus import stopwords
+from nltk import bigrams
+import string
+import vincent 
 
 emoticons_str = r"""
     (?:
@@ -37,6 +41,10 @@ def preprocess(s, lowercase=False):
         tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
     return tokens
 
+# remove punctuation from list of most frequent words to collect
+punctuation = list(string.punctuation)
+stop = stopwords.words('english') + punctuation + ['rt', 'via']
+
 tweets_data_path = 'celtics_knicks.txt'
 
 tweets_data = []
@@ -47,7 +55,14 @@ for line in tweets_file:
         tweet = json.loads(line)
         tweets_data.append(tweet)
         terms_all = [term for term in preprocess(tweet['text'])]
-        count_all.update(terms_all)
+        terms_stop = [term for term in preprocess(tweet['text']) if term not in
+        stop]
+        terms_bigram = bigrams(terms_stop)
+        terms_hash = [term for term in preprocess(tweet['text'])
+        if term.startswith('#')]
+        terms_only = [term for term in preprocess(tweet['text']) if term not in
+        stop and not term.startswith(('#', '@'))]
+        count_all.update(terms_bigram)
     except:
         continue
 
@@ -112,4 +127,4 @@ ax.set_title('Ranking: NBA vs. celtics vs. knicks', fontsize=10, fontweight='bol
 ax.set_xticks([p + 0.4 * width for p in x_pos])
 ax.set_xticklabels(nba_keywords)
 plt.grid()
-plt.savefig('nba_keywords', dpi=100)
+# plt.savefig('nba_keywords', dpi=100)

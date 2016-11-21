@@ -1,20 +1,59 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-import re2
+import re
+import operator
+from collections import Counter
 
-tweets_data_path = 'nba_data.txt'
+emoticons_str = r"""
+    (?:
+        [:=;] # Eyes
+        [oO\-]? # Nose (optional)
+        [D\)\]\(\]/\\OpP] # Mouth
+    )"""
+
+regex_str = [
+    emoticons_str,
+    r'<[^>]+>', # HTML tags
+    r'(?:@[\w_]+)', # @-mentions
+    r"(?:\#+[\w_]+[\w\'_\-]*[\w_]+)", # hash-tags
+    r'http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+', # URLs
+
+    r'(?:(?:\d+,?)+(?:\.?\d+)?)', # numbers
+    r"(?:[a-z][a-z'\-_]+[a-z])", # words with - and '
+    r'(?:[\w_]+)', # other words
+    r'(?:\S)' # anything else
+]
+
+tokens_re = re.compile(r'('+'|'.join(regex_str)+')', re.VERBOSE | re.IGNORECASE)
+emoticon_re = re.compile(r'^'+emoticons_str+'$', re.VERBOSE | re.IGNORECASE)
+
+def tokenize(s):
+    return tokens_re.findall(s)
+
+def preprocess(s, lowercase=False):
+    tokens = tokenize(s)
+    if lowercase:
+        tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
+    return tokens
+
+tweets_data_path = 'celtics_knicks.txt'
 
 tweets_data = []
 tweets_file = open(tweets_data_path, "r")
+count_all = Counter()
 for line in tweets_file:
     try:
         tweet = json.loads(line)
         tweets_data.append(tweet)
+        terms_all = [term for term in preprocess(tweet['text'])]
+        count_all.update(terms_all)
     except:
         continue
 
 print len(tweets_data)
+print(count_all.most_common(5))
+
 tweets = pd.DataFrame()
 
 tweets['text'] = map(lambda tweet: tweet['text'], tweets_data)
@@ -30,7 +69,7 @@ ax.set_xlabel('Languages', fontsize=15)
 ax.set_ylabel('Number of tweets' , fontsize=15)
 ax.set_title('Top 5 languages', fontsize=15, fontweight='bold')
 tweets_by_lang[:5].plot(ax=ax, kind='bar', color='red')
-# plt.savefig('langs', dpi=100)
+# plt.savefig('nba_langs', dpi=100)
 
 tweets_by_country = tweets['country'].value_counts()
 
@@ -41,7 +80,7 @@ ax2.set_xlabel('Countries', fontsize=15)
 ax2.set_ylabel('Number of tweets' , fontsize=15)
 ax2.set_title('Top 5 countries', fontsize=15, fontweight='bold')
 tweets_by_country[:5].plot(ax=ax2, kind='bar', color='blue')
-# plt.savefig('countries', dpi=100)
+# plt.savefig('nba_countries', dpi=100)
 
 def word_in_text(word, text):
     word = word.lower()
@@ -52,9 +91,25 @@ def word_in_text(word, text):
     return False
 
 tweets['NBA'] = tweets['text'].apply(lambda tweet: word_in_text('NBA', tweet))
-tweets['jazz'] = tweets['text'].apply(lambda tweet: word_in_text('jazz', tweet))
+tweets['celtics'] = tweets['text'].apply(lambda tweet: word_in_text('celtics', tweet))
 tweets['knicks'] = tweets['text'].apply(lambda tweet: word_in_text('knicks', tweet))
 
 print tweets['NBA'].value_counts()[True]
-print tweets['jazz'].value_counts()[True]
+print tweets['celtics'].value_counts()[True]
 print tweets['knicks'].value_counts()[True]
+
+nba_keywords = ['NBA', 'celtics', 'knicks']
+tweets_by_keywords = [tweets['NBA'].value_counts()[True], tweets['celtics'].value_counts()[True], tweets['knicks'].value_counts()[True]]
+
+x_pos = list(range(len(nba_keywords)))
+width = 0.8
+fig, ax = plt.subplots()
+plt.bar(x_pos, tweets_by_keywords, width, alpha=1, color='g')
+
+# Setting axis labels and ticks
+ax.set_ylabel('Number of tweets', fontsize=15)
+ax.set_title('Ranking: NBA vs. celtics vs. knicks', fontsize=10, fontweight='bold')
+ax.set_xticks([p + 0.4 * width for p in x_pos])
+ax.set_xticklabels(nba_keywords)
+plt.grid()
+plt.savefig('nba_keywords', dpi=100)

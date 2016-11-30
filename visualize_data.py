@@ -7,7 +7,7 @@ from collections import Counter
 from nltk.corpus import stopwords
 from nltk import bigrams
 import string
-import vincent 
+import vincent
 
 emoticons_str = r"""
     (?:
@@ -50,6 +50,10 @@ tweets_data_path = 'celtics_knicks.txt'
 tweets_data = []
 tweets_file = open(tweets_data_path, "r")
 count_all = Counter()
+count_stop = Counter()
+count_bigram = Counter()
+count_hash = Counter()
+count_terms_only = Counter()
 for line in tweets_file:
     try:
         tweet = json.loads(line)
@@ -62,12 +66,23 @@ for line in tweets_file:
         if term.startswith('#')]
         terms_only = [term for term in preprocess(tweet['text']) if term not in
         stop and not term.startswith(('#', '@'))]
-        count_all.update(terms_bigram)
+        count_all.update(terms_all)
+        count_stop.update(terms_stop)
+        count_bigram.update(terms_bigram)
+        count_hash.update(terms_hash)
+        count_terms_only.update(terms_only)
     except:
         continue
 
 print len(tweets_data)
 print(count_all.most_common(5))
+print(count_stop.most_common(5))
+
+hashtag_freq = count_all.most_common(20)
+labels, freq = zip(*hashtag_freq)
+data = {'data': freq, 'x': labels}
+bar = vincent.Bar(data, iter_idx = 'x')
+bar.to_json('hashtag_freq.json', html_out=True, html_path = 'chart.html')
 
 tweets = pd.DataFrame()
 

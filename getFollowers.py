@@ -11,8 +11,10 @@ consumer_secret = '2TXgZOMmNx2oNeANcRuUEjvdcqM6ODqWJYIuXCRaxq1dR1SFw9'
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True,
-compression = True)
+api = tweepy.API(auth, wait_on_rate_limit = True, compression = True)
 
-for user in tweepy.Cursor(api.followers, screen_name="celtics").items():
-    print user.screen_name
+ids = []
+for page in tweepy.Cursor(api.followers_ids, screen_name="celtics").pages():
+    ids.extend(page)
+
+print len(ids)

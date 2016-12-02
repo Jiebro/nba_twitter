@@ -1,0 +1,220 @@
+{
+  "axes": [
+    {
+      "scale": "x",
+      "type": "x"
+    },
+    {
+      "scale": "y",
+      "type": "y"
+    }
+  ],
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {
+          "col": "data",
+          "idx": ".",
+          "val": 1536
+        },
+        {
+          "col": "data",
+          "idx": "\ud83d",
+          "val": 774
+        },
+        {
+          "col": "data",
+          "idx": "the",
+          "val": 667
+        },
+        {
+          "col": "data",
+          "idx": "!",
+          "val": 630
+        },
+        {
+          "col": "data",
+          "idx": ",",
+          "val": 581
+        },
+        {
+          "col": "data",
+          "idx": "\ud83c",
+          "val": 513
+        },
+        {
+          "col": "data",
+          "idx": "to",
+          "val": 493
+        },
+        {
+          "col": "data",
+          "idx": "I",
+          "val": 465
+        },
+        {
+          "col": "data",
+          "idx": "a",
+          "val": 442
+        },
+        {
+          "col": "data",
+          "idx": "in",
+          "val": 342
+        },
+        {
+          "col": "data",
+          "idx": "\udfd2",
+          "val": 327
+        },
+        {
+          "col": "data",
+          "idx": "and",
+          "val": 289
+        },
+        {
+          "col": "data",
+          "idx": "?",
+          "val": 285
+        },
+        {
+          "col": "data",
+          "idx": "is",
+          "val": 279
+        },
+        {
+          "col": "data",
+          "idx": "of",
+          "val": 278
+        },
+        {
+          "col": "data",
+          "idx": "you",
+          "val": 254
+        },
+        {
+          "col": "data",
+          "idx": "#GoHabsGo",
+          "val": 253
+        },
+        {
+          "col": "data",
+          "idx": "for",
+          "val": 234
+        },
+        {
+          "col": "data",
+          "idx": "at",
+          "val": 199
+        },
+        {
+          "col": "data",
+          "idx": "on",
+          "val": 185
+        }
+      ]
+    },
+    {
+      "name": "stats",
+      "source": "table",
+      "transform": [
+        {
+          "keys": [
+            "data.idx"
+          ],
+          "type": "facet"
+        },
+        {
+          "type": "stats",
+          "value": "data.val"
+        }
+      ]
+    }
+  ],
+  "height": 500,
+  "legends": [],
+  "marks": [
+    {
+      "from": {
+        "data": "table",
+        "transform": [
+          {
+            "keys": [
+              "data.col"
+            ],
+            "type": "facet"
+          },
+          {
+            "height": "data.val",
+            "point": "data.idx",
+            "type": "stack"
+          }
+        ]
+      },
+      "marks": [
+        {
+          "properties": {
+            "enter": {
+              "fill": {
+                "field": "data.col",
+                "scale": "color"
+              },
+              "width": {
+                "band": true,
+                "offset": -1,
+                "scale": "x"
+              },
+              "x": {
+                "field": "data.idx",
+                "scale": "x"
+              },
+              "y": {
+                "field": "y",
+                "scale": "y"
+              },
+              "y2": {
+                "field": "y2",
+                "scale": "y"
+              }
+            }
+          },
+          "type": "rect"
+        }
+      ],
+      "type": "group"
+    }
+  ],
+  "padding": "auto",
+  "scales": [
+    {
+      "domain": {
+        "data": "table",
+        "field": "data.idx"
+      },
+      "name": "x",
+      "range": "width",
+      "type": "ordinal",
+      "zero": false
+    },
+    {
+      "domain": {
+        "data": "stats",
+        "field": "sum"
+      },
+      "name": "y",
+      "nice": true,
+      "range": "height"
+    },
+    {
+      "domain": {
+        "data": "table",
+        "field": "data.col"
+      },
+      "name": "color",
+      "range": "category20",
+      "type": "ordinal"
+    }
+  ],
+  "width": 960
+}

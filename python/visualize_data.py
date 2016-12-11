@@ -43,9 +43,9 @@ def preprocess(s, lowercase=False):
 
 # remove punctuation from list of most frequent words to collect
 punctuation = list(string.punctuation)
-stop = stopwords.words('english') + punctuation + ['rt', 'via']
+stop = stopwords.words('english') + punctuation + ['rt', 'via', 'RT']
 
-tweets_data_path = 'topTeamsData.txt'
+tweets_data_path = '../data/76ers.txt'
 
 tweets_data = []
 tweets_file = open(tweets_data_path, "r")
@@ -74,18 +74,28 @@ for line in tweets_file:
     except:
         continue
 
-print len(tweets_data)
-# print(count_all.most_common(5))
-# print(count_stop.most_common(5))
+def gen_frequency_list(list, count):
+    common_list = list.most_common(count)
+    frequency_list = []
+    for item in common_list:
+        for i in range(0, item[1]):
+            frequency_list.append(item[0])
+    return frequency_list
 
-# hashtag_freq = count_all.most_common(20)
+test = gen_frequency_list(count_hash, 50)
+print test
+
+# print(count_terms_only.most_common(15))
+# print(count_bigram.most_common(15))
+
+# hashtag_freq = count_hash.most_common
 # labels, freq = zip(*hashtag_freq)
 # data = {'data': freq, 'x': labels}
 # bar = vincent.Bar(data, iter_idx = 'x')
 # bar.to_json('hashtag_freq.json', html_out=True, html_path = 'chart.html')
 #
 # tweets = pd.DataFrame()
-#
+# #
 # tweets['text'] = map(lambda tweet: tweet['text'], tweets_data)
 # tweets['lang'] = map(lambda tweet: tweet['lang'], tweets_data)
 # tweets['country'] = map(lambda tweet: tweet['place']['country'] if tweet['place'] != None else None, tweets_data)
@@ -112,24 +122,36 @@ print len(tweets_data)
 # tweets_by_country[:5].plot(ax=ax2, kind='bar', color='blue')
 # # plt.savefig('nba_countries', dpi=100)
 #
-# def word_in_text(word, text):
-#     word = word.lower()
-#     text = text.lower()
-#     match = re.search(word, text)
-#     if match:
-#         return True
-#     return False
+def word_in_text(word, text):
+    word = word.lower()
+    text = text.lower()
+    match = re.search(word, text)
+    if match:
+        return True
+    return False
 #
-# tweets['NBA'] = tweets['text'].apply(lambda tweet: word_in_text('NBA', tweet))
-# tweets['celtics'] = tweets['text'].apply(lambda tweet: word_in_text('celtics', tweet))
-# tweets['knicks'] = tweets['text'].apply(lambda tweet: word_in_text('knicks', tweet))
+
+def word_count(tweets, terms):
+    tweets_by_keywords = []
+    for term in terms:
+        tweets['term'] = tweets['text'].apply(lambda tweet:
+        word_in_text('term', tweet))
+        tweets_by_keywords.append([tweets['term'].value_counts()[True]])
+    return tweets_by_keywords
+
+# tweets['Jazz'] = tweets['text'].apply(lambda tweet: word_in_text('Jazz', tweet))
+# tweets['Pelicans'] = tweets['text'].apply(lambda tweet: word_in_text('Pelicans', tweet))
+# tweets['CavsBulls'] = tweets['text'].apply(lambda tweet: word_in_text('knicks', tweet))
 #
 # print tweets['NBA'].value_counts()[True]
 # print tweets['celtics'].value_counts()[True]
 # print tweets['knicks'].value_counts()[True]
 #
-# nba_keywords = ['NBA', 'celtics', 'knicks']
-# tweets_by_keywords = [tweets['NBA'].value_counts()[True], tweets['celtics'].value_counts()[True], tweets['knicks'].value_counts()[True]]
+# nba_keywords = ['Jazz', 'Pelicans', 'CavsBulls']
+# keywords = word_count(tweets, nba_keywords)
+# print keywords
+# tweets_by_keywords = [tweets['Jazz'].value_counts()[True], tweets['Pelicans'].value_counts()[True],
+# tweets['CavsBulls'].value_counts()[True]]
 #
 # x_pos = list(range(len(nba_keywords)))
 # width = 0.8
@@ -138,8 +160,8 @@ print len(tweets_data)
 #
 # # Setting axis labels and ticks
 # ax.set_ylabel('Number of tweets', fontsize=15)
-# ax.set_title('Ranking: NBA vs. celtics vs. knicks', fontsize=10, fontweight='bold')
+# ax.set_title('Count of popular terms', fontsize=10, fontweight='bold')
 # ax.set_xticks([p + 0.4 * width for p in x_pos])
 # ax.set_xticklabels(nba_keywords)
 # plt.grid()
-# plt.savefig('nba_keywords', dpi=100)
+# plt.savefig('top_teams', dpi=100)

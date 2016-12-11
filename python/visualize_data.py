@@ -45,7 +45,7 @@ def preprocess(s, lowercase=False):
 punctuation = list(string.punctuation)
 stop = stopwords.words('english') + punctuation + ['rt', 'via', 'RT']
 
-tweets_data_path = '../data/76ers.txt'
+tweets_data_path = '../data/Mavs.txt'
 
 tweets_data = []
 tweets_file = open(tweets_data_path, "r")
@@ -82,7 +82,7 @@ def gen_frequency_list(list, count):
             frequency_list.append(item[0])
     return frequency_list
 
-test = gen_frequency_list(count_hash, 50)
+test = gen_frequency_list(count_stop, 50)
 print test
 
 # print(count_terms_only.most_common(15))

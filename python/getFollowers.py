@@ -14,7 +14,5 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, compression = True)
 
 ids = []
-for page in tweepy.Cursor(api.followers_ids, screen_name="celtics").pages():
-    ids.extend(page)
-
-print len(ids)
+for user in tweepy.Cursor(api.followers, screen_name="celtics").items():
+    print user.screen_name

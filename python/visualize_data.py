@@ -74,6 +74,15 @@ for line in tweets_file:
     except:
         continue
 
+# team_csv = "../data/ATLHawks_tweets.csv"
+# team_data = []
+# team_file = open(team_csv, "r")
+# count2_stop = Counter()
+# for tweet in team_csv:
+#     team_all = [term for term in preprocess(tweet) if term not in stop]
+#     count2_stop.update(team_all)
+# print count2_stop.most_common(20)
+
 def gen_frequency_list(list, count):
     common_list = list.most_common(count)
     frequency_list = []
@@ -82,7 +91,7 @@ def gen_frequency_list(list, count):
             frequency_list.append(item[0])
     return frequency_list
 
-test = gen_frequency_list(count_stop, 50)
+test = gen_frequency_list(count_bigram, 50)
 print test
 
 # print(count_terms_only.most_common(15))

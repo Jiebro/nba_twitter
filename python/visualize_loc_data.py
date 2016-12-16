@@ -9,6 +9,8 @@ from nltk import bigrams
 import string
 import vincent
 
+# source: http://adilmoujahid.com/posts/2014/07/twitter-analytics/ text mining for twitter analytics 
+
 emoticons_str = r"""
     (?:
         [:=;] # Eyes
@@ -124,26 +126,26 @@ def word_in_text(word, text):
         return True
     return False
 
-# tweets['NBA'] = tweets['text'].apply(lambda tweet: word_in_text('NBA', tweet))
-# tweets['celtics'] = tweets['text'].apply(lambda tweet: word_in_text('celtics', tweet))
-# tweets['knicks'] = tweets['text'].apply(lambda tweet: word_in_text('knicks', tweet))
+tweets['NBA'] = tweets['text'].apply(lambda tweet: word_in_text('NBA', tweet))
+tweets['celtics'] = tweets['text'].apply(lambda tweet: word_in_text('celtics', tweet))
+tweets['knicks'] = tweets['text'].apply(lambda tweet: word_in_text('knicks', tweet))
 #
 # print tweets['NBA'].value_counts()[True]
 # print tweets['celtics'].value_counts()[True]
 # print tweets['knicks'].value_counts()[True]
 #
-# nba_keywords = ['NBA', 'celtics', 'knicks']
-# tweets_by_keywords = [tweets['NBA'].value_counts()[True], tweets['celtics'].value_counts()[True], tweets['knicks'].value_counts()[True]]
-#
-# x_pos = list(range(len(nba_keywords)))
-# width = 0.8
-# fig, ax = plt.subplots()
-# plt.bar(x_pos, tweets_by_keywords, width, alpha=1, color='g')
-#
-# # Setting axis labels and ticks
-# ax.set_ylabel('Number of tweets', fontsize=15)
-# ax.set_title('Ranking: NBA vs. celtics vs. knicks', fontsize=10, fontweight='bold')
-# ax.set_xticks([p + 0.4 * width for p in x_pos])
-# ax.set_xticklabels(nba_keywords)
-# plt.grid()
-# plt.savefig('nba_keywords', dpi=100)
+nba_keywords = ['NBA', 'celtics', 'knicks']
+tweets_by_keywords = [tweets['NBA'].value_counts()[True], tweets['celtics'].value_counts()[True], tweets['knicks'].value_counts()[True]]
+
+x_pos = list(range(len(nba_keywords)))
+width = 0.8
+fig, ax = plt.subplots()
+plt.bar(x_pos, tweets_by_keywords, width, alpha=1, color='g')
+
+# Setting axis labels and ticks
+ax.set_ylabel('Number of tweets', fontsize=15)
+ax.set_title('Ranking: NBA vs. celtics vs. knicks', fontsize=10, fontweight='bold')
+ax.set_xticks([p + 0.4 * width for p in x_pos])
+ax.set_xticklabels(nba_keywords)
+plt.grid()
+plt.savefig('nba_keywords', dpi=100)

@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -45,7 +46,7 @@ def preprocess(s, lowercase=False):
 punctuation = list(string.punctuation)
 stop = stopwords.words('english') + punctuation + ['rt', 'via', 'RT']
 
-tweets_data_path = '../data/Mavs.txt'
+tweets_data_path = '../data/76ers.txt'
 
 tweets_data = []
 tweets_file = open(tweets_data_path, "r")
@@ -88,10 +89,11 @@ def gen_frequency_list(list, count):
     frequency_list = []
     for item in common_list:
         for i in range(0, item[1]):
-            frequency_list.append(item[0])
+            frequency_list.append(item[0].encode("utf-8"))
     return frequency_list
 
-test = gen_frequency_list(count_bigram, 50)
+test = gen_frequency_list(count_hash, 50)
+# test.encode('ascii', 'ignore')
 print test
 
 # print(count_terms_only.most_common(15))

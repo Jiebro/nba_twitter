@@ -7,13 +7,17 @@ import json
 import nltk
 from nltk.probability import FreqDist
 from nltk.corpus import stopwords
-# import visualize_data
+from vaderSentiment import sentiment as vaderSentiment
+
+# sources: http://www.nltk.org/book/ch06.html naive bayes classifier,
+# https://medium.com/@aneesha/quick-social-media-sentiment-analysis-with-vader-da44951e4116#.hzsth01he
+# vader sentiment analysis 
 
 # list of positive and negative tweets for training data
 pos_tweets = []
 neg_tweets = []
 
-# read data into these lists based on which example they are
+# read data into these lists based on positive, negative examples
 with open('../data/training_data.csv', 'r') as f:
     reader = csv.reader(f, delimiter=',')
     for row in reader:
@@ -70,11 +74,12 @@ def load_data(datapath):
     for line in data_file:
         try:
             tweet = json.loads(line)
-            tweets_data.append(tweet)
+            tweets_data.append(tweet['text'])
         except:
             continue
     return tweets_data
 
+# read csv of tweets collected from team homepages
 def read_csv(datapath):
     tweets_data = []
     with open(datapath, 'rb') as f:
@@ -107,8 +112,14 @@ def classify_team(tweets, classifier):
     return [pos_data, neg_data]
 
 # get team data for classifying
-# cavs_data_path = '../data/cavalier_starters.txt'
-# cavs_data = load_data(cavs_data_path)
+cavs_data_path = '../data/cavalier_starters.txt'
+cavs_data = load_data(cavs_data_path)
+
+
+for sentence in cavs_data:
+    print sentence,
+    sentiment = vaderSentiment(sentence)
+    print "\n\t" + str(sentiment)
 # cavs_pos = classify(cavs_data, nb_classifier)[0]
 # cavs_neg = classify(cavs_data, nb_classifier)[1]
 #
@@ -137,14 +148,13 @@ ATL_data = read_csv(ATL_data_path)
 ATL_pos = classify_team(ATL_data, nb_classifier)[0]
 # ATL_neg = classify_team(ATL_data, nb_classifier)[1]
 # print len(ATL_data)
-tweets_file = open(ATL_data_path, "r")
-count_all = Counter()
-for tweet in tweets_file:
-        terms_all = [term for term in preprocess(tweet) if term not in stop]
-        count_all.update(terms_all)
-
-print(count_all.most_common(5))
-
+# tweets_file = open(ATL_data_path, "r")
+# count_all = Counter()
+# for tweet in tweets_file:
+#         terms_all = [term for term in preprocess(tweet) if term not in stop]
+#         count_all.update(terms_all)
+#
+# print(count_all.most_common(5))
 
 # positive to negative ratio for data set
 def get_ratio_pos(pos_ex, neg_ex):
